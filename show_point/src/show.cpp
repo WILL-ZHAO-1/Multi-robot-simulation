@@ -4,9 +4,9 @@
 #include <cmath>
 #include <vector>
 
-#define PATH "/home/zhao/ros_code/src/show_point/config/node_list.txt"
-#define PATH2 "/home/zhao/ros_code/src/show_point/config/match_node.txt"
-#define ORIGIN "/home/zhao/ros_code/src/show_point/config/origin.txt"
+#define PATH "config/node_list.txt"
+#define PATH2 "config/match_node.txt"
+#define ORIGIN "config/origin.txt"
 
 struct goal_node
 {
@@ -21,11 +21,9 @@ void creat_node()
   goal_node P;
   float x,y,n,or_x,or_y;
 	std::ifstream ifs;
-  //获取地图原点
   ifs.open(ORIGIN, std::ios::in);
 	ifs>> or_x>> or_y;
 	ifs.close();
-  //获取节点列表
 	ifs.open(PATH, std::ios::in);
 
 	while (!ifs.eof())
@@ -43,7 +41,6 @@ void read()
   goal_node P,P1;
 
 	std::ifstream ifs;
-  //获取节点列表
 	ifs.open(PATH2, std::ios::in);
   int a,b,c,d,e,f;
 	while (!ifs.eof())
@@ -74,7 +71,6 @@ int main( int argc, char** argv )
   while (ros::ok())
   {
 
-    //创建一个 visualization_msgs/Marker消息
     // visualization_msgs::Marker points,line_strip;
     // points.header.frame_id = line_strip.header.frame_id = "map";
     // points.header.stamp = line_strip.header.stamp = ros::Time::now();
@@ -93,17 +89,14 @@ int main( int argc, char** argv )
     //line_strip.id = 1;
 
 
-    //设置marker类型到 POINTS, LINE_STRIP 和 LINE_LIST
     points.type = visualization_msgs::Marker::POINTS;
     //line_strip.type = visualization_msgs::Marker::LINE_STRIP;
 
 
 
-    // scale成员对于这些marker类型是不同的,POINTS marker分别使用x和y作为宽和高，然而LINE_STRIP和LINE_LIST marker仅仅使用x，定义为线的宽度。单位是米。
     points.scale.x = 0.1;
     //line_strip.scale.x = 0.01;
 
-    //点为黄色
     points.color.r =0.93f;
     points.color.g = 0.93f;
     points.color.b =0.0f;
@@ -121,15 +114,6 @@ int main( int argc, char** argv )
       p.y=t.y;
       points.points.push_back(p);
     }
-
-    // for (auto t:match_node)
-    // {
-    //   p.x=t.x;
-    //   p.y=t.y;
-    //   line_strip.points.push_back(p);
-    // }
-
-    //发布各个markers
     marker_pub.publish(points);
     //marker_pub.publish(line_strip);
     r.sleep();
