@@ -1,0 +1,6 @@
+image: /home/zhao/multi-simulation_ws/src/turtlebot3/turtlebot3_navigation/maps/t-empty.pgm
+resolution: 0.05
+origin: [-1.38305, -1.57983, 0.0]
+negate: 0
+occupied_thresh: 0.65
+free_thresh: 0.196

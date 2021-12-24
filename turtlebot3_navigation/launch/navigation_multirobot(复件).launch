@@ -1,0 +1,74 @@
+<launch>
+  <arg name="robot_name1" default="tb3_0" />
+  <arg name="robot_name2" default="tb3_1" />
+
+<!-- Map server -->
+  <arg name="map_file" default="$(find turtlebot3_navigation)/maps/t-empty.yaml"/>
+  <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)"/>
+
+<group ns="$(arg robot_name1)">
+
+  <include file="$(find turtlebot3_bringup)/launch/turtlebot3_remote.launch">
+    <arg name="model" value="burger" />
+  </include>
+
+  <!-- AMCL -->
+  <arg name="custom_amcl_launch_file" default="$(find turtlebot3_navigation)/launch/amcl.multi.launch.xml"/>
+  <arg name="robot_x_pos" default="0.0"/> 
+  <arg name="robot_y_pos" default="0.0"/> 
+  <arg name="robot_a_pos" default="0.0"/>
+  <include file="$(arg custom_amcl_launch_file)">
+    <arg name="global_frame_id" value="/map"/>
+    <arg name="odom_frame_id"   value="$(arg robot_name1)/odom"/>
+    <arg name="base_frame_id"   value="$(arg robot_name1)/base_footprint"/> 
+    <arg name="initial_pose_x" value="$(arg robot_x_pos)"/>
+    <arg name="initial_pose_y" value="$(arg robot_y_pos)"/>
+    <arg name="initial_pose_a" value="$(arg robot_a_pos)"/>
+  </include>
+  
+  <!-- move_base -->
+  <include file="$(find turtlebot3_navigation)/launch/move_base_robot.launch.xml">
+    <arg name="global_frame_id" value="/map"/>
+    <arg name="odom_frame_id"   value="/$(arg robot_name1)/odom"/>
+    <arg name="base_frame_id"   value="/$(arg robot_name1)/base_footprint"/>
+    <arg name="odom_topic" value="/$(arg robot_name1)/odom" />
+    <arg name="laser_topic" value="/$(arg robot_name1)/scan" />
+    <arg name="cmd_topic" value="/$(arg robot_name1)/cmd_vel" />
+  </include>
+</group>
+
+<group ns="$(arg robot_name2)">
+
+  <include file="$(find turtlebot3_bringup)/launch/turtlebot3_remote.launch">
+    <arg name="model" value="burger" />
+  </include>
+
+  <!-- AMCL -->
+  <arg name="custom_amcl_launch_file" default="$(find turtlebot3_navigation)/launch/amcl.multi.launch.xml"/>
+  <arg name="robot_x_pos" default="2.0"/> 
+  <arg name="robot_y_pos" default="0.0"/> 
+  <arg name="robot_a_pos" default="0.0"/>
+  <include file="$(arg custom_amcl_launch_file)">
+    <arg name="global_frame_id" value="/map"/>
+    <arg name="odom_frame_id"   value="$(arg robot_name2)/odom"/>
+    <arg name="base_frame_id"   value="$(arg robot_name2)/base_footprint"/> 
+    <arg name="initial_pose_x" value="$(arg robot_x_pos)"/>
+    <arg name="initial_pose_y" value="$(arg robot_y_pos)"/>
+    <arg name="initial_pose_a" value="$(arg robot_a_pos)"/>
+  </include>
+  
+  <!-- move_base -->
+  <include file="$(find turtlebot3_navigation)/launch/move_base_robot.launch.xml">
+    <arg name="global_frame_id" value="/map"/>
+    <arg name="odom_frame_id"   value="/$(arg robot_name2)/odom"/>
+    <arg name="base_frame_id"   value="/$(arg robot_name2)/base_footprint"/>
+    <arg name="odom_topic" value="/$(arg robot_name2)/odom" />
+    <arg name="laser_topic" value="/$(arg robot_name2)/scan" />
+    <arg name="cmd_topic" value="/$(arg robot_name2)/cmd_vel" />
+  </include>
+</group>
+
+  <node pkg="rviz" type="rviz" name="rviz" required="true"
+          args="-d $(find turtlebot3_navigation)/rviz/three_tb3_one_map_threegoals.rviz"/>
+</launch>
+
